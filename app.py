@@ -24,9 +24,9 @@ if __name__ == '__main__':
     if all_options_file.exists():
         all_options = all_options_file.read_text()
         all_options = literal_eval(all_options)
-        
+
         print(f'All previous options = {all_options}')
-        
+
         algo = ReinforcementAlgo(all_options)
         algo.play()
     else:

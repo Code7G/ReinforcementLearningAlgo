@@ -5,7 +5,7 @@ from ast import literal_eval
 
 # Reinforcement Learning Algorithm
 class ReinforcementAlgo:
-    
+
     # Suplying all of the possible game options
     def __init__(self, options):
         self.options = options
@@ -34,14 +34,14 @@ class ReinforcementAlgo:
         save_file = Path('Knowledge.txt')
 
         if save_file.exists():
-            
+
             # Reading previous option values from the Knowledge.txt file
             option_values = self.read_previous_ov(save_file)
 
             # More games loop
             count = 0
             while True:
-                
+
                 # Setting the current game options
                 input_options = input(
                     'All current game options (example: option option option): ')
@@ -62,13 +62,13 @@ class ReinforcementAlgo:
                         str(option_values) + '\n' + '\n'
 
                     save_file.write_text(text)
-                    
+
                     # End the program
                     print('Program ended')
                     break
 
                 elif 'LOSS' in current_options or 'DRAW' in current_options or 'WIN' in current_options:
-                    
+
                     # Updating option values using game results, saving the game results and saving updated option values
                     count += 1
                     result = current_options.copy()
@@ -79,7 +79,7 @@ class ReinforcementAlgo:
                     print(f'Updated option values: {option_values}')
                     history_of_actions.clear()
                 else:
-                    
+
                     # Choosing the best option from the option values
                     option = self.choose_option(option_values, current_options)
 
@@ -93,14 +93,14 @@ class ReinforcementAlgo:
         else:
             # Firs game
             while True:
-                
+
                 # Setting the current game options
                 input_options = input(
                     'All current game options (example: option option option): ')
                 current_options = input_options.split(' ')
 
                 if 'LOSS' in current_options or 'DRAW' in current_options or 'WIN' in current_options:
-                    
+
                     # Creating the first option values using game results, saving the game results and saving new option values
                     result = current_options.copy()
                     actions = history_of_actions.copy()
@@ -123,7 +123,7 @@ class ReinforcementAlgo:
             # More games loop
             count = 1
             while True:
-                
+
                 # Setting the current game options
                 input_options = input(
                     'All current game options (example: option option option): ')
@@ -144,13 +144,13 @@ class ReinforcementAlgo:
                         str(option_values) + '\n' + '\n'
 
                     save_file.write_text(text)
-                    
+
                     # Ending the program
                     print('Program ended')
                     break
 
                 elif 'LOSS' in current_options or 'DRAW' in current_options or 'WIN' in current_options:
-                    
+
                     # Updating option values using game results, saving the game results and saving updated option values
                     count += 1
                     result = current_options.copy()
@@ -174,7 +174,7 @@ class ReinforcementAlgo:
     def read_previous_ov(self, path: Path):
         '''
         Read the previous option values from a given path containing a .txt file
-        
+
         The previous options values in the file must be stored as a dictionary:
         Example: {g1: 1000003, g2: 999998}
         '''
@@ -236,7 +236,7 @@ class ReinforcementAlgo:
     def learning(self, result: list, history_of_actions: list):  # action = used option
         '''
         Create the first option values and update the option values according to the result of the previous game
-        
+
         If the result of the previous game was:
         WIN = option value +2
         DRAW = option value +1
@@ -269,7 +269,7 @@ class ReinforcementAlgo:
     def consistant_learning(self, result: list, history_of_actions: list, option_values: dict):
         '''
         Update the option values according to the result of the previous game
-        
+
         If the result of the previous game was:
         WIN = option value +2
         DRAW = option value +1
