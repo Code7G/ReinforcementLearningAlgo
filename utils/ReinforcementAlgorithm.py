@@ -5,6 +5,9 @@ from ast import literal_eval
 
 # Reinforcement Learning Algorithm
 class ReinforcementAlgo:
+    '''
+    The Reinforcement Learning Algorithm class
+    '''
 
     # Suplying all of the possible game options
     def __init__(self, options):
@@ -12,6 +15,9 @@ class ReinforcementAlgo:
 
     # Main function for the use of this algorithm by terminal and files
     def play(self):
+        '''
+        The main function for using the reinforcement learning algorithm
+        '''
 
         # info
         print('''
