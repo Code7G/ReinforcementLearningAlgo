@@ -29,21 +29,21 @@ if __name__ == '__main__':
 
         algo = ReinforcementAlgo(all_options)
         algo.play()
+
     else:
-        all_options = input(
-            '''To start the program for the first time you will need to configure all the possible moves in a game
-          Plese enter all possible game options (> example example example) > ''')
+        all_options = input('''
+To start the program for the first time you will need to configure all the possible moves in a game
+Plese enter all possible game options (> example example example) > ''')
 
         all_options = all_options.split(' ')
         all_options_file.write_text(str(all_options))
         print(
             f'\n All optons were saved in file All_options.txt at {all_options_file.absolute()}')
         print('''
-              Do not modify/delete or change the location of this file, because it could result in an error,
+Do not modify/delete or change the location of this file, because it could result in an error,
               
-              ONLY delete the file if you want to reset all the game options,
-              and change the file if you want to change all the game options \n
-              ''')
+ONLY delete the file if you want to reset all the game options,
+and change the file if you want to change all the game options \n''')
         algo = ReinforcementAlgo(all_options)
         algo.play()
 

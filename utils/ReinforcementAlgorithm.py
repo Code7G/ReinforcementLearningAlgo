@@ -21,18 +21,14 @@ class ReinforcementAlgo:
 
         # info
         print('''
-            For input, you will be asked "All current game options: ", for this input all the CURRENT POSSIBLE game options,
-            but when the game ends,
-            you will need to type LOSS/DRAW/WIN (to "All current game options: ") as a result of the game
-            after setting the result of the game, you can type the END command to save the knowledge and end the program,
-            or you can set the current game options and keep playing more games
-            
-            IMPORTANT:
-            ONLY use the END command after defying the result of a game, if you don't the program will crash,
-            DON'T DEFY the results of a game twice, if you do the program will crash,
-            For the first time using the program, DON'T END the program after playing only ONE GAME,
-            And don't modify/delete or change the location of the Knowledge.txt file, the file is only safe to look at,
-            ONLY if you want to reset the option values you are free to delete the Knowledge.txt file \n''')
+For input, you will be asked "All current game options: ", for this type all the CURRENT POSSIBLE game options,
+but when the game ends,
+you will need to type LOSS/DRAW/WIN (to "All current game options: ") as a result of the game
+after setting the result of the game, you will be asked if you want to save the knowledge and end the program.
+
+IMPORTANT:
+Don't modify/delete or change the location of the Knowledge.txt file, the file is only safe to look at,
+you are free to delete the Knowledge.txt file ONLY if you want to reset the option values \n''')
 
         history_of_actions = []
         saved_history_of_actions = {}
@@ -53,51 +49,77 @@ class ReinforcementAlgo:
                     'All current game options (example: option option option): ')
                 current_options = input_options.split(' ')
 
-                if 'END' in current_options:
+                if 'LOSS' in current_options or 'DRAW' in current_options or 'WIN' in current_options:
 
-                    # Save the knowledge
-                    print('Saving learned knowledge..')
+                    # Checking if the game was valid
+                    if len(history_of_actions.copy()) == 0:
+                        print('A game with no action is invalid')
+                        print('Try again')
 
-                    text = save_file.read_text()
-                    for game in saved_history_of_actions:
-                        text += 'Game ' + \
-                            str(game) + ' = ' + \
-                            str(saved_history_of_actions.get(
-                                game)) + '.\n'
-                    text += 'The option values of games is = ' + \
-                        str(option_values) + '\n' + '\n'
+                    else:
+                        # Updating option values using game results, saving the game results and saving updated option values
+                        count += 1
+                        result = current_options.copy()
+                        actions = history_of_actions.copy()
+                        saved_history_of_actions[count] = actions, result
+                        option_values = self.consistant_learning(
+                            result, history_of_actions, option_values)
+                        print(f'Updated option values: {option_values}')
+                        history_of_actions.clear()
 
-                    save_file.write_text(text)
+                        usr_choice = input(
+                            'Do you want to end the program? (Y/n) ')
 
-                    # End the program
-                    print('Program ended')
-                    break
+                        if usr_choice.upper() == 'Y':
 
-                elif 'LOSS' in current_options or 'DRAW' in current_options or 'WIN' in current_options:
+                            # Save the knowledge
+                            print('Saving learned knowledge..')
 
-                    # Updating option values using game results, saving the game results and saving updated option values
-                    count += 1
-                    result = current_options.copy()
-                    actions = history_of_actions.copy()
-                    saved_history_of_actions[count] = actions, result
-                    option_values = self.consistant_learning(
-                        result, history_of_actions, option_values)
-                    print(f'Updated option values: {option_values}')
-                    history_of_actions.clear()
+                            text = save_file.read_text()
+                            for game in saved_history_of_actions:
+                                text += 'Game ' + \
+                                    str(game) + ' = ' + \
+                                    str(saved_history_of_actions.get(
+                                        game)) + '.\n'
+                            text += 'The option values of games is = ' + \
+                                str(option_values) + '\n' + '\n'
+
+                            save_file.write_text(text)
+
+                            # End the program
+                            print('Program ended')
+                            break
                 else:
 
                     # Choosing the best option from the option values
                     option = self.choose_option(option_values, current_options)
 
-                    # Restarting if option is invalid
-                    if 'ERROR: Option not in options' in option:
-                        return 'Option Invalid'
+                    # Restart game if option is invalid
+                    if option == 'END':
+                        end_program = input('''
+Are you sure you want to end the program now? (Your games and option values will not be saved,
+try doing this after finishing a game with a resoult)
+(Y/n)? ''')
+                        if end_program.upper() == 'Y':
+                            print('Program ended without saving progress')
+                            return 'Program ended without save'
+
+                        else:
+                            pass
+
+                    elif 'ERROR: Option not in options' in option:
+                        print('Invalid Option')
+                        print('Try again')
+
                     else:
                         print(f'Choosen option = {option}')
                         history_of_actions.append(option)
 
         else:
+
             # Firs game
+            end = 0
+            count = 1
             while True:
 
                 # Setting the current game options
@@ -107,27 +129,72 @@ class ReinforcementAlgo:
 
                 if 'LOSS' in current_options or 'DRAW' in current_options or 'WIN' in current_options:
 
-                    # Creating the first option values using game results, saving the game results and saving new option values
-                    result = current_options.copy()
-                    actions = history_of_actions.copy()
-                    saved_history_of_actions[1] = actions, result
-                    option_values = self.learning(result, history_of_actions)
-                    print(f'Updated option values: {option_values}')
-                    history_of_actions.clear()
-                    break
+                    # Checking if the game was valid
+                    if len(history_of_actions.copy()) == 0:
+                        print('A game with no action is invalid')
+                        print('Try again')
+
+                    else:
+                        # Creating the first option values using game results, saving the game results and saving new option values
+                        result = current_options.copy()
+                        actions = history_of_actions.copy()
+                        saved_history_of_actions[count] = actions, result
+                        option_values = self.learning(
+                            result, history_of_actions)
+                        print(f'Updated option values: {option_values}')
+                        history_of_actions.clear()
+
+                        usr_choice = input(
+                            'Do you want to end the program? (Y/n) ')
+
+                        if usr_choice.upper() == 'Y':
+
+                            # Save the knowledge
+                            print('Saving learned knowledge..')
+
+                            text = ''
+                            for game in saved_history_of_actions:
+                                text += 'Game ' + \
+                                    str(game) + ' = ' + \
+                                    str(saved_history_of_actions.get(
+                                        game)) + '.\n'
+                            text += 'The option values of games is = ' + \
+                                str(option_values) + '\n' + '\n'
+
+                            save_file.write_text(text)
+
+                            # End the program
+                            print('Program ended')
+                            end += 1
+                            break
+
                 else:
                     # Choosing a random option because there are no option values yet
                     option = self.first_learning(current_options)
 
-                    # Restarting if option is invalid
-                    if option == 'Option Invalid':
-                        return 'Option Invalid'
+                    # Restart game if option is invalid
+                    if option == 'END':
+                        end_program = input('''
+Are you sure you want to end the program now?
+(Y/n)? ''')
+                        if end_program.upper() == 'Y':
+                            print('Program ended')
+                            return 'Program ended'
+
+                        else:
+                            pass
+
+                    elif option == 'Option Invalid':
+                        print('Try again')
+
                     else:
                         print(f'Choosen option = {option}')
                         history_of_actions.append(option)
 
+            if end >= 1:
+                return ''
+
             # More games loop
-            count = 1
             while True:
 
                 # Setting the current game options
@@ -135,44 +202,68 @@ class ReinforcementAlgo:
                     'All current game options (example: option option option): ')
                 current_options = input_options.split(' ')
 
-                if 'END' in current_options:
+                if 'LOSS' in current_options or 'DRAW' in current_options or 'WIN' in current_options:
 
-                    # Save the knowledge
-                    print('Saving learned knowledge..')
+                    # Checking if the game was valid
+                    if len(history_of_actions.copy()) == 0:
+                        print('A game with no action is invalid')
+                        print('Try again')
 
-                    text = ''
-                    for game in saved_history_of_actions:
-                        text += 'Game ' + \
-                            str(game) + ' = ' + \
-                            str(saved_history_of_actions.get(
-                                game)) + '.\n'
-                    text += 'The option values of games is = ' + \
-                        str(option_values) + '\n' + '\n'
+                    else:
+                        # Updating option values using game results, saving the game results and saving updated option values
+                        count += 1
+                        result = current_options.copy()
+                        actions = history_of_actions.copy()
+                        saved_history_of_actions[count] = actions, result
+                        option_values = self.consistant_learning(
+                            result, history_of_actions, option_values)
+                        print(f'Updated option values: {option_values}')
+                        history_of_actions.clear()
 
-                    save_file.write_text(text)
+                        usr_choice = input(
+                            'Do you want to end the program? (Y/n) ')
 
-                    # Ending the program
-                    print('Program ended')
-                    break
+                        if usr_choice.upper() == 'Y':
 
-                elif 'LOSS' in current_options or 'DRAW' in current_options or 'WIN' in current_options:
+                            # Save the knowledge
+                            print('Saving learned knowledge..')
 
-                    # Updating option values using game results, saving the game results and saving updated option values
-                    count += 1
-                    result = current_options.copy()
-                    actions = history_of_actions.copy()
-                    saved_history_of_actions[count] = actions, result
-                    option_values = self.consistant_learning(
-                        result, history_of_actions, option_values)
-                    print(f'Updated option values: {option_values}')
-                    history_of_actions.clear()
+                            text = ''
+                            for game in saved_history_of_actions:
+                                text += 'Game ' + \
+                                    str(game) + ' = ' + \
+                                    str(saved_history_of_actions.get(
+                                        game)) + '.\n'
+                            text += 'The option values of games is = ' + \
+                                str(option_values) + '\n' + '\n'
+
+                            save_file.write_text(text)
+
+                            # Ending the program
+                            print('Program ended')
+                            break
+
                 else:
                     # Choosing the best option from the option values
                     option = self.choose_option(option_values, current_options)
 
-                    # Restarting if option is invalid
-                    if 'ERROR: Option not in options' in option:
-                        return 'Option Invalid'
+                    # Restart game if option is invalid
+                    if option == 'END':
+                        end_program = input('''
+Are you sure you want to end the program now? (Your games and option values will not be saved,
+try doing this after finishing a game with a resoult)
+(Y/n)? ''')
+                        if end_program.upper() == 'Y':
+                            print('Program ended without saving progress')
+                            return 'Program ended without save'
+
+                        else:
+                            pass
+
+                    elif 'ERROR: Option not in options' in option:
+                        print('Invalid Option')
+                        print('Try again')
+
                     else:
                         print(f'Choosen option = {option}')
                         history_of_actions.append(option)
@@ -207,6 +298,7 @@ class ReinforcementAlgo:
         for data in splited_data:
             if ':' in data:
                 option_values_options.append(data)
+
             else:
                 pass
 
@@ -229,8 +321,12 @@ class ReinforcementAlgo:
 
         # Checking if option is valid
         for option in current_options:
-            if option in self.options:
+            if option == 'END':
+                return 'END'
+
+            elif option in self.options:
                 pass
+
             else:
                 print('Invalid Option')
                 return 'Option Invalid'
@@ -315,21 +411,28 @@ class ReinforcementAlgo:
 
         # Getting highest option value
         for option in current_options:
-            if option in option_values:
+            if 'END' in option:
+                return 'END'
+
+            elif option in option_values:
                 value = option_values.get(option)
+
                 if value > max:
                     max = value
+
                 else:
                     pass
+
             else:
-                print('ERROR: Option is not in all options')
-                return 'ERROR: Option not in options', option_values
+                print('Option is not in all options')
+                return 'ERROR: Option not in options'
 
         # Setting high-value options
         best_options = []
         for option in current_options:
             if option_values.get(option) == max:
                 best_options.append(option)
+
             else:
                 pass
 
@@ -337,6 +440,7 @@ class ReinforcementAlgo:
         if len(best_options) > 1:
             randindex = randrange(0, len(best_options))
             return best_options[randindex]
+
         else:
             return best_options[0]
 
