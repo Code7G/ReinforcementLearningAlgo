@@ -94,11 +94,11 @@ you are free to delete the Knowledge.txt file ONLY if you want to reset the opti
                     # Choosing the best option from the option values
                     option = self.choose_option(option_values, current_options)
 
-                    # Restart game if option is invalid
+                    # Restart the game if the option is invalid
                     if option == 'END':
                         end_program = input('''
 Are you sure you want to end the program now? (Your games and option values will not be saved,
-try doing this after finishing a game with a resoult)
+try doing this after finishing a game with a result)
 (Y/n)? ''')
                         if end_program.upper() == 'Y':
                             print('Program ended without saving progress')
@@ -172,7 +172,7 @@ try doing this after finishing a game with a resoult)
                     # Choosing a random option because there are no option values yet
                     option = self.first_learning(current_options)
 
-                    # Restart game if option is invalid
+                    # Restart the game if the option is invalid
                     if option == 'END':
                         end_program = input('''
 Are you sure you want to end the program now?
@@ -247,11 +247,11 @@ Are you sure you want to end the program now?
                     # Choosing the best option from the option values
                     option = self.choose_option(option_values, current_options)
 
-                    # Restart game if option is invalid
+                    # Restarting the game if the option is invalid
                     if option == 'END':
                         end_program = input('''
 Are you sure you want to end the program now? (Your games and option values will not be saved,
-try doing this after finishing a game with a resoult)
+try doing this after finishing a game with a result)
 (Y/n)? ''')
                         if end_program.upper() == 'Y':
                             print('Program ended without saving progress')
@@ -319,7 +319,7 @@ try doing this after finishing a game with a resoult)
         Pick a valid random option from all the current options
         '''
 
-        # Checking if option is valid
+        # Checking if the option is valid
         for option in current_options:
             if option == 'END':
                 return 'END'

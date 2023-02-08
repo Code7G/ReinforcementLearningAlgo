@@ -38,7 +38,7 @@ Plese enter all possible game options (> example example example) > ''')
         all_options = all_options.split(' ')
         all_options_file.write_text(str(all_options))
         print(
-            f'\n All optons were saved in file All_options.txt at {all_options_file.absolute()}')
+            f'\n All options were saved in file All_options.txt at {all_options_file.absolute()}')
         print('''
 Do not modify/delete or change the location of this file, because it could result in an error,
               
